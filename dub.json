@@ -1,0 +1,9 @@
+{
+	"authors": [
+		"animuspexus"
+	],
+	"copyright": "Copyright © 2020, animuspexus",
+	"description": "A minimal D application.",
+	"license": "GPLv3",
+	"name": "dutils"
+}

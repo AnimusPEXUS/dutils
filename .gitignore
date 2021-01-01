@@ -1,0 +1,15 @@
+.dub
+docs.json
+__dummy.html
+docs/
+/dutils
+dutils.so
+dutils.dylib
+dutils.dll
+dutils.a
+dutils.lib
+dutils-test-*
+*.exe
+*.o
+*.obj
+*.lst
