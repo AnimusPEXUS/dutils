@@ -9,7 +9,7 @@ import dutils.string;
 
 // TODO: make more unittests?
 
-const doubleDirSeparator = dirSeparator ~ dirSeparator;
+private const doubleDirSeparator = dirSeparator ~ dirSeparator;
 
 private string[] deleteEmptyItems(string[] args)
 {
@@ -45,10 +45,15 @@ private string deleteEmptyItems(string value)
     return value;
 }
 
+/*
+split string by dirSeparator.
+This function preserves root slash and (optionally) preserves trailing slash
+note: this function removes any empty ements from result.
+*/
 string[] split(string value, bool keep_end_separator = false)
 {
-    auto start_separator = startsWithSeparator(value);
-    auto end_separator = endsWithSeparator(value);
+    auto const start_separator = startsWithSeparator(value);
+    auto const end_separator = endsWithSeparator(value);
 
     value = deleteEmptyItems(value);
     auto splitted = dutils.string.split(value, dirSeparator);
@@ -85,11 +90,23 @@ unittest
     assert(t1 == cast(string[])["a", "b", "c", ""]);
 }
 
+/*
+split string by dirSeparator.
+This function preserves root slash (in form of "" as #0 element) and (optionally)
+preserves trailing slash (in form of "" as last element)
+note: there are two ways to state what where shold be a root slash in result:
+1. put empty string as first element of args array
+2. insert slash as first character in first element of args array.
+note: this function removes any empty ements from result.
+note: this function removes any slashes from elements (by splitting elements
+with slashes),
+note: this function inserts empty element at #0 index, if args determined as rooted.
+*/
 string[] split(string[] args, bool keep_end_separator = false)
 {
 
-    auto start_separator = startsWithSeparator(args);
-    auto end_separator = endsWithSeparator(args);
+    auto const start_separator = startsWithSeparator(args);
+    auto const end_separator = endsWithSeparator(args);
 
     string[] splitted;
 
@@ -128,12 +145,12 @@ unittest
     assert(t1 == ["d", "a", "b", "c", ""]);
 }
 
-bool startsWithSeparator(string value)
+private bool startsWithSeparator(string value)
 {
     return value.startsWith(dirSeparator);
 }
 
-bool startsWithSeparator(string[] args)
+private bool startsWithSeparator(string[] args)
 {
     return (args.length != 0 && (args[0] == "" || args[0].startsWith(dirSeparator)));
 }
@@ -156,12 +173,12 @@ unittest
     assert(t1 == true);
 }
 
-bool endsWithSeparator(string value)
+private bool endsWithSeparator(string value)
 {
     return value.endsWith(dirSeparator);
 }
 
-bool endsWithSeparator(string[] args)
+private bool endsWithSeparator(string[] args)
 {
     return (args.length != 0 && (args[$ - 1] == "" || args[$ - 1].endsWith(dirSeparator)));
 }
@@ -178,14 +195,15 @@ unittest
     assert(t1 == true);
 }
 
-/*
-keep_end_empty - if True and *args ends on '' or b'', then result will
-end with trailing slash
-*/
+string join(string value, bool keep_end_empty = false)
+{
+    return join(cast(string[])[value], keep_end_empty);
+}
+
 string join(string[] args, bool keep_end_empty = false)
 {
-    auto start_separator = startsWithSeparator(args);
-    auto end_separator = endsWithSeparator(args);
+    auto const start_separator = startsWithSeparator(args);
+    auto const end_separator = endsWithSeparator(args);
 
     string ret;
 

@@ -103,7 +103,7 @@ string join(string[] values, string sub)
 {
 
     string ret;
-    auto values_length = values.length;
+    auto const values_length = values.length;
 
     foreach (ptrdiff_t index, string i; values)
     {
