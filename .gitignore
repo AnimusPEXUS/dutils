@@ -13,3 +13,4 @@ dutils-test-*
 *.o
 *.obj
 *.lst
+*.a
