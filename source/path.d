@@ -3,10 +3,11 @@ module dutils.path;
 import std.path;
 import std.algorithm;
 import std.array;
+import std.string;
 
 import dutils.string;
 
-// TODO: make more unittests? 
+// TODO: make more unittests?
 
 const doubleDirSeparator = dirSeparator ~ dirSeparator;
 
@@ -36,7 +37,10 @@ unittest
 private string deleteEmptyItems(string value)
 {
 
-    value = value.replace(doubleDirSeparator, dirSeparator);
+    while (value.indexOf(doubleDirSeparator) != -1)
+    {
+        value = value.replace(doubleDirSeparator, dirSeparator);
+    }
 
     return value;
 }
@@ -185,15 +189,20 @@ string join(string[] args, bool keep_end_empty = false)
 
     string ret;
 
-    for (ptrdiff_t i = args.length - 1; i != -1; i += -1)
+    args = deleteEmptyItems(args);
+
+    foreach (index, item; args)
     {
-        if (args[i] == "")
+        ret ~= item;
+        if (index < args.length)
         {
-            args.remove(i);
+            ret ~= dirSeparator;
         }
     }
 
-    ret = ret.strip(cast(char[])[dirSeparator]);
+    ret = deleteEmptyItems(ret);
+
+    ret = ret.strip(dirSeparator[0]);
 
     if (start_separator)
     {
@@ -214,14 +223,20 @@ unittest
     assert(t1 == "/a/b/c");
 
     t1 = join(["d/a", "//", "", "b", "/c/"]);
+    assert(t1 == "d/a/b/c");
+
+    t1 = join(["d/a", "//", "", "b", "/c/"], true);
     assert(t1 == "d/a/b/c/");
 
     t1 = join(["", "d/a", "//", "", "b", "/c/"]);
-    assert(t1 == " /d/a/b/c/");
+    assert(t1 == "/d/a/b/c");
 
     t1 = join([" ", "", "d/a", "//", "", "b", "/c/"]);
-    assert(t1 == " /d/a/b/c/");
+    assert(t1 == " /d/a/b/c");
 
     t1 = join(["d/a", "//", "", "b", "/c", ""]);
+    assert(t1 == "d/a/b/c");
+
+    t1 = join(["d/a", "//", "", "b", "/c", ""], true);
     assert(t1 == "d/a/b/c/");
 }
