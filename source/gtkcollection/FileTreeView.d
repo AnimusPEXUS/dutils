@@ -1,13 +1,20 @@
-module dedit.FileTreeView;
+module dutils.gtkcollection.FileTreeView;
 
 import std.path;
+import std.file;
 
 import gtk.TreeView;
 import gtk.TreeStore;
+import gtk.TreeModelIF;
 import gtk.TreeViewColumn;
 import gtk.TreeIter;
 import gtk.CellRendererPixbuf;
 import gtk.CellRendererText;
+
+import gtk.c.types;
+import gobject.Value;
+
+import dutils.path;
 
 class FileTreeView {
 
@@ -49,8 +56,8 @@ private {
     };
 
     void setRootDirectory(string path) {
-        rootDir = asNormalizedPath(path);
-        reload();
+        rootDir = buildNormalizedPath(path);
+        refresh();
     };
 
     string getRootDirectory() {
@@ -62,29 +69,53 @@ private {
     }; */
 
     void refresh() {
-        loadDir()
+        auto m = tw.getModel();
+        loadDir(null, rootDir);
     }
 
-    void loadDir(TreeIter itera, string path) {
-        auto m = tw.getModel();
-
-        auto chi = m.getChildren(itera);
-        bool res = true;
-
-        while (chi !is null && res != false) {
-            res = m.remove(chi);
-            chi = m.getChildren(itera);
-        }
-
+    void loadDir(TreeIter itera,  string path) {
         string[] lst;
+        string[] lst_dirs;
+        string[] lst_files;
 
-        foreach (string i ; dirEntries(path, SpanMode.shallow, false) {
+        foreach (string i ; dirEntries(path, SpanMode.shallow, false)) {
             lst ~= i;
         }
 
-        foreach (string i; lst) {
-            isDir()
+        foreach (i; lst) {
+            auto joined = dutils.path.join(cast(string[])[path, i]);
+            if (isDir(joined) ){
+                lst_dirs ~= i;
+            } else {
+                lst_files ~= i;
+            }
         }
+
+        auto m = tw.getModel();
+
+        {
+        TreeIter chi;
+
+        bool res  = m.iterChildren(chi, itera);
+
+        // TODO: remove only really missing files
+        while (res) {
+            res = (cast(TreeStore)m).remove( chi);
+        }
+    }
+
+        foreach (i;lst_dirs) {
+            TreeIter new_iter;
+            (cast(TreeStore)m).append(new_iter, itera);
+            (cast(TreeStore)m).setValuesv(new_iter, [0,1], [new Value("folder"), new Value(i)]);
+        }
+
+        foreach (i;lst_files) {
+            TreeIter new_iter;
+            (cast(TreeStore)m).append(new_iter, itera);
+            (cast(TreeStore)m).setValuesv(new_iter, [0,1], [new Value("txt"), new Value(i)]);
+        }
+
 
     }
 

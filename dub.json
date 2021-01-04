@@ -3,6 +3,9 @@
 		"animuspexus"
 	],
 	"copyright": "Copyright © 2020, animuspexus",
+	"dependencies": {
+		"gtk-d": "~>3.9.0"
+	},
 	"description": "A minimal D application.",
 	"license": "GPLv3",
 	"name": "dutils"
