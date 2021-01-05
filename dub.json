@@ -6,7 +6,7 @@
 	"dependencies": {
 		"gtk-d": "~>3.9.0"
 	},
-	"description": "A minimal D application.",
+	"description": "handy tools",
 	"license": "GPLv3",
 	"name": "dutils"
 }

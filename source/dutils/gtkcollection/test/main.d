@@ -1,6 +1,10 @@
 module main;
 
 import gtk.Window;
+import gtk.Widget;
+import gtk.Application;
+import gio.Application;
+
 
 import dutils.gtkcollection.FileTreeView;
 
@@ -11,16 +15,15 @@ class MainWindow : Window {
     }
 
     this() {
-        super();
-        setTitle("test");
+        super("test");
 
         ftw = new FileTreeView();
 
-        packStart(ftw, true, true, 0);
+        add(cast(Widget)ftw);
     }
 }
 
-void main() {
+int main(string[] args) {
     auto app = new gtk.Application.Application(
         "filetreeviewtest.wayround.i2p",
         gio.Application.GApplicationFlags.FLAGS_NONE
