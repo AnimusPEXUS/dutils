@@ -16,22 +16,21 @@ import gobject.Value;
 
 import dutils.path;
 
-class FileTreeView {
+class FileTreeView
+{
 
-private {
-    TreeView tw;
-    TreeStore ts;
+    private
+    {
+        TreeView tw;
+        TreeStore ts;
 
-    string rootDir;
-    bool showHidden;
+        string rootDir;
+        bool showHidden;
     }
 
-    this() {
-
-        /* show_hidden = false; */
-
-
-        ts = new TreeStore(cast(GType[])[GType.STRING,GType.STRING]);
+    this()
+    {
+        ts = new TreeStore(cast(GType[])[GType.STRING, GType.STRING]);
 
         tw.setHeadersVisible(false);
         tw.setSearchColumn(1);
@@ -55,12 +54,14 @@ private {
         setRootDirectory(expandTilde("~"));
     };
 
-    void setRootDirectory(string path) {
+    void setRootDirectory(string path)
+    {
         rootDir = buildNormalizedPath(path);
         refresh();
     };
 
-    string getRootDirectory() {
+    string getRootDirectory()
+    {
         return rootDir;
     };
 
@@ -68,25 +69,32 @@ private {
 
     }; */
 
-    void refresh() {
+    void refresh()
+    {
         auto m = tw.getModel();
         loadDir(null, rootDir);
     }
 
-    void loadDir(TreeIter itera,  string path) {
+    void loadDir(TreeIter itera, string path)
+    {
         string[] lst;
         string[] lst_dirs;
         string[] lst_files;
 
-        foreach (string i ; dirEntries(path, SpanMode.shallow, false)) {
+        foreach (string i; dirEntries(path, SpanMode.shallow, false))
+        {
             lst ~= i;
         }
 
-        foreach (i; lst) {
+        foreach (i; lst)
+        {
             auto joined = dutils.path.join(cast(string[])[path, i]);
-            if (isDir(joined) ){
+            if (isDir(joined))
+            {
                 lst_dirs ~= i;
-            } else {
+            }
+            else
+            {
                 lst_files ~= i;
             }
         }
@@ -94,28 +102,34 @@ private {
         auto m = tw.getModel();
 
         {
-        TreeIter chi;
+            TreeIter chi;
 
-        bool res  = m.iterChildren(chi, itera);
+            bool res = m.iterChildren(chi, itera);
 
-        // TODO: remove only really missing files
-        while (res) {
-            res = (cast(TreeStore)m).remove( chi);
+            // TODO: remove only really missing files
+            while (res)
+            {
+                res = (cast(TreeStore) m).remove(chi);
+            }
         }
-    }
 
-        foreach (i;lst_dirs) {
+        foreach (i; lst_dirs)
+        {
             TreeIter new_iter;
-            (cast(TreeStore)m).append(new_iter, itera);
-            (cast(TreeStore)m).setValuesv(new_iter, [0,1], [new Value("folder"), new Value(i)]);
+            (cast(TreeStore) m).append(new_iter, itera);
+            (cast(TreeStore) m).setValuesv(new_iter, [0, 1], [
+                    new Value("folder"), new Value(i)
+                    ]);
         }
 
-        foreach (i;lst_files) {
+        foreach (i; lst_files)
+        {
             TreeIter new_iter;
-            (cast(TreeStore)m).append(new_iter, itera);
-            (cast(TreeStore)m).setValuesv(new_iter, [0,1], [new Value("txt"), new Value(i)]);
+            (cast(TreeStore) m).append(new_iter, itera);
+            (cast(TreeStore) m).setValuesv(new_iter, [0, 1], [
+                    new Value("txt"), new Value(i)
+                    ]);
         }
-
 
     }
 
