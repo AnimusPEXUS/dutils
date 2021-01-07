@@ -2,8 +2,11 @@ module dutils.gtkcollection.FileTreeView;
 
 import std.path;
 import std.file;
+import std.algorithm;
+/* import std.stdio; */
 
 import gtk.TreeView;
+import gtk.ScrolledWindow;
 import gtk.TreeStore;
 import gtk.TreeModelIF;
 import gtk.TreeViewColumn;
@@ -21,7 +24,8 @@ class FileTreeView
 
     private
     {
-        TreeView tw;
+        TreeView tv;
+        ScrolledWindow tv_sw;
         TreeStore ts;
 
         string rootDir;
@@ -32,15 +36,21 @@ class FileTreeView
     {
         ts = new TreeStore(cast(GType[])[GType.STRING, GType.STRING]);
 
-        tw.setHeadersVisible(false);
-        tw.setSearchColumn(1);
+        tv = new TreeView();
+        tv_sw = new ScrolledWindow();
+        tv_sw.add(tv);
+
+        tv.setModel(ts);
+
+        tv.setHeadersVisible(false);
+        tv.setSearchColumn(1);
 
         {
             auto c = new TreeViewColumn();
             auto r = new CellRendererPixbuf();
             c.packStart(r, false);
             c.addAttribute(r, "icon-name", 0);
-            tw.appendColumn(c);
+            tv.appendColumn(c);
         }
 
         {
@@ -48,11 +58,15 @@ class FileTreeView
             auto r = new CellRendererText();
             c.packStart(r, false);
             c.addAttribute(r, "text", 1);
-            tw.appendColumn(c);
+            tv.appendColumn(c);
         }
 
         setRootDirectory(expandTilde("~"));
     };
+
+    ScrolledWindow getWidget() {
+        return tv_sw;
+    }
 
     void setRootDirectory(string path)
     {
@@ -71,7 +85,7 @@ class FileTreeView
 
     void refresh()
     {
-        auto m = tw.getModel();
+        auto m = tv.getModel();
         loadDir(null, rootDir);
     }
 
@@ -83,23 +97,45 @@ class FileTreeView
 
         foreach (string i; dirEntries(path, SpanMode.shallow, false))
         {
-            lst ~= i;
+            lst ~= baseName(i);
         }
 
+        loop:
         foreach (i; lst)
         {
             auto joined = dutils.path.join(cast(string[])[path, i]);
-            if (isDir(joined))
-            {
-                lst_dirs ~= i;
+            if ( isSymlink(joined)) {
+                {
+
+                        string link_value=    readLink(joined);
+                        /* string link_value_real = ""; */
+
+                        try {
+                            // TODO: impliment and use realPath() function
+                         auto t = new DirEntry(link_value);
+                        } catch (                            std.file.FileException                            ) {
+                            lst_files ~= i;
+                            continue loop;
+                        }
+
+                }
             }
-            else
-            {
-                lst_files ~= i;
-            }
+
+                if (isDir(joined))
+                {
+                    lst_dirs ~= i;
+                }
+                else
+                {
+                    lst_files ~= i;
+                }
+
         }
 
-        auto m = tw.getModel();
+        lst_dirs.sort();
+        lst_files.sort();
+
+        auto m = tv.getModel();
 
         {
             TreeIter chi;

@@ -8,5 +8,11 @@
 	},
 	"description": "handy tools",
 	"license": "GPLv3",
-	"name": "dutils"
+	"name": "dutils",
+	"importPaths": [
+                "source/"
+        ],
+        "sourcePaths": [
+                "source/"
+        ]
 }
