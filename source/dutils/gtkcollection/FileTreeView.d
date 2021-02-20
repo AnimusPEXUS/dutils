@@ -112,8 +112,7 @@ class FileTreeView
         return false;
     }
 
-    // expands directory relatively to selected root
-    void expandByTreePath(TreePath tp)
+    void loadByTreePath(TreePath tp)
     {
         auto pth = convertTreePathToFilePath(tp);
         pth = dutils.path.join([rootDir, pth]);
@@ -125,6 +124,10 @@ class FileTreeView
         }
     }
 
+    void expandByTreePath(TreePath tp)
+    {
+        tv.expandToPath(tp);
+    }
     // NOTE: this doesn't adds root path before result
     string convertTreePathToFilePath(TreePath tp)
     {
