@@ -7,11 +7,8 @@ const LINE_STARTS = ctRegex!("(?<=^|\n)");
 
 version (unittest)
 {
-
     const TEST_STRING_0 = "123test456\ntest789\n\ntest\n";
-
     const TEST_STRING_0_0 = "test";
-
 }
 
 unittest
