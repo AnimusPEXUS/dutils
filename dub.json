@@ -1,18 +1,18 @@
 {
+	"name": "dutils",
+	"description": "handy tools",
 	"authors": [
 		"animuspexus"
 	],
 	"copyright": "Copyright © 2020, animuspexus",
+	"license": "GPLv3",
 	"dependencies": {
 		"dlangui": "~>0.9.186",
 		"gtk-d": "~>3.9.0"
 	},
-	"description": "handy tools",
 	"importPaths": [
 		"source/"
 	],
-	"license": "GPLv3",
-	"name": "dutils",
 	"sourcePaths": [
 		"source/"
 	],

@@ -1,3 +1,5 @@
+/* module dutils.dlanuiutils.StringGridWidgetWithTools; */
+
 import dlangui;
 
 class StringGridWidgetWithTools : StringGridWidget
