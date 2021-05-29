@@ -8,6 +8,7 @@ import std.string;
 import dutils.string;
 
 // TODO: make more unittests?
+// TODO: use templates for allowing dstring and wstring
 
 private const doubleDirSeparator = dirSeparator ~ dirSeparator;
 
