@@ -7,8 +7,7 @@
 	"copyright": "Copyright © 2020, animuspexus",
 	"license": "GPLv3",
 	"dependencies": {
-		"dlangui": "~>0.9.186",
-		"gtk-d": "~>3.9.0"
+		"dlgo": "~>0.0.0"
 	},
 	"importPaths": [
 		"source/"
