@@ -7,7 +7,10 @@
 	"copyright": "Copyright © 2020, animuspexus",
 	"license": "GPLv3",
 	"dependencies": {
-		"dlgo": "~>0.0.0"
+		"dlgo": {
+			"version": "~>0.0.0",
+			"repository": "git+https://github.com/AnimusPEXUS/dlgo.git"
+			},
 	},
 	"importPaths": [
 		"source/"
